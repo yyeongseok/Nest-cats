@@ -1,10 +1,10 @@
-import { IsEmail, IsNotEmpty, IsString } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CatRequestDto {
   @ApiProperty({
-    example: "test@test.com",
-    description: "email",
+    example: 'test@test.com',
+    description: 'email',
     required: true,
   })
   @IsEmail()
@@ -12,8 +12,8 @@ export class CatRequestDto {
   email: string;
 
   @ApiProperty({
-    example: "1234",
-    description: "password",
+    example: '1234',
+    description: 'password',
     required: true,
   })
   @IsString()
@@ -21,8 +21,8 @@ export class CatRequestDto {
   password: string;
 
   @ApiProperty({
-    example: "blue",
-    description: "name",
+    example: 'blue',
+    description: 'name',
     required: true,
   })
   @IsString()
