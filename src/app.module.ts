@@ -6,15 +6,18 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { LoggerMiddleware } from './common/logger/logger.middleware';
 import * as Mongoose from 'mongoose';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot(), // env 불러오기
     MongooseModule.forRoot(process.env.MONGODB_URI, {
+      //디비 연결하기 및 설정하기
       useNewUrlParser: true,
       useUnifiedTopology: true,
     }),
     CatsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
