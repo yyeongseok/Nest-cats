@@ -2,8 +2,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { Document, SchemaOptions } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { Comments } from 'src/comments/comments.schema';
 
 const options: SchemaOptions = {
+  collection: 'Cats',
   timestamps: true,
 };
 
@@ -58,16 +60,30 @@ export class Cat extends Document {
     email: string;
     name: string;
     imgUrl: string;
+    comments: Comments[];
   };
+
+  readonly comments: Comments[];
 }
+// populate : 다른 문서랑 이어줄때 사용하는 몽구스
+const _CatSchema = SchemaFactory.createForClass(Cat);
 
-export const CatSchema = SchemaFactory.createForClass(Cat);
-
-CatSchema.virtual('readOnlyData').get(function (this: Cat) {
+_CatSchema.virtual('readOnlyData').get(function (this: Cat) {
   return {
     id: this.id,
     email: this.email,
     name: this.name,
     imgUrl: this.imgUrl,
+    comments: this.comments,
   };
 });
+
+_CatSchema.virtual('comments', {
+  ref: 'comments',
+  localField: '_id',
+  foreignField: 'info',
+});
+_CatSchema.set('toObject', { virtuals: true });
+_CatSchema.set('toJSON', { virtuals: true });
+
+export const CatSchema = _CatSchema;

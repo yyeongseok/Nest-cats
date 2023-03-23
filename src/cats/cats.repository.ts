@@ -1,15 +1,25 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model, mongo, Types } from 'mongoose';
+import { Comments, CommentsSchema } from 'src/comments/comments.schema';
+import { CommentsService } from 'src/comments/services/comments.service';
 import { Cat } from './cats.schema';
 import { CatRequestDto } from './dto/cats.request.dto';
 
 @Injectable()
 export class CatsRepository {
-  constructor(@InjectModel(Cat.name) private readonly catModel: Model<Cat>) {}
-
+  constructor(
+    @InjectModel(Cat.name) private readonly catModel: Model<Cat>,
+    @InjectModel(Comments.name) private readonly commentsModel: Model<Comments>,
+  ) {}
   async findAll() {
-    return await this.catModel.find();
+    //const commentsModel = mongoose.model('comments', CommentsSchema);
+
+    const result = await this.catModel
+      .find()
+      .populate({ path: 'comments', model: this.commentsModel });
+    // populate 다른 document랑 이어주는 역활을 한다.
+    return result;
   }
 
   async findByIdAndUpdateImg(id: string, fileName: string) {
@@ -20,7 +30,9 @@ export class CatsRepository {
     return newCat.readOnlyData;
   }
 
-  async findCatByWithoutPassword(catId: string): Promise<Cat | null> {
+  async findCatByWithoutPassword(
+    catId: string | Types.ObjectId,
+  ): Promise<Cat | null> {
     const cat = await this.catModel.findById(catId).select('-password');
     return cat;
   }
