@@ -8,10 +8,13 @@ import * as Mongoose from 'mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { CommentsModule } from './comments/comments.module';
+import { AwsModule } from './aws/aws.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(), // env 불러오기
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }), // env 불러오기
     MongooseModule.forRoot(process.env.MONGODB_URI, {
       //디비 연결하기 및 설정하기
       useNewUrlParser: true,
@@ -20,6 +23,7 @@ import { CommentsModule } from './comments/comments.module';
     CatsModule,
     AuthModule,
     CommentsModule,
+    AwsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
